@@ -3,7 +3,6 @@ package ic
 import (
 	"bytes"
 	"encoding/base64"
-	"fmt"
 	"github.com/fogleman/gg"
 	"github.com/golang/freetype/truetype"
 	"golang.org/x/image/font"
@@ -16,14 +15,13 @@ var IC = identifyCode{}
 
 type identifyCode struct {}
 
-func (ic *identifyCode) GetBase64Encode(codeLength int) string {
-	code := ic.getRandStr(codeLength)
-	fmt.Println(code)
+func (ic *identifyCode) GetBase64Encode(codeLength int) (code string, result string) {
+	code = ic.getRandStr(codeLength)
 
 	data := ic.imgText(200, 100, code)
-	result := base64.StdEncoding.EncodeToString(data)
+	result = base64.StdEncoding.EncodeToString(data)
 	result = "data:image/jpg;base64," + result
-	return result
+	return
 }
 
 func (ic *identifyCode) SaveFile(filepath string, codeLength int) {
