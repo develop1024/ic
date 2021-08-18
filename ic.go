@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-var IC = identifyCode{}
+var IC = &identifyCode{}
 
 type identifyCode struct {}
 
