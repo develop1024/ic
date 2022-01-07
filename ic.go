@@ -15,22 +15,22 @@ var IC = &identifyCode{}
 
 type identifyCode struct {}
 
-func (ic *identifyCode) GetBase64Encode(codeLength int) (code string, result string) {
-	code = ic.getRandStr(codeLength)
+func (receiver *identifyCode) GetBase64Encode(codeLength int) (code string, result string) {
+	code = receiver.getRandStr(codeLength)
 
-	data := ic.imgText(200, 100, code)
+	data := receiver.imgText(220, 100, code)
 	result = base64.StdEncoding.EncodeToString(data)
 	result = "data:image/jpg;base64," + result
 	return
 }
 
-func (ic *identifyCode) SaveFile(filepath string, codeLength int) {
-	code := ic.getRandStr(codeLength)
-	data := ic.imgText(200, 100, code)
+func (receiver *identifyCode) SaveFile(filepath string, codeLength int) {
+	code := receiver.getRandStr(codeLength)
+	data := receiver.imgText(220, 100, code)
 	ioutil.WriteFile(filepath, data, 0644)
 }
 
-func (i *identifyCode) getRandStr(n int) (randStr string) {
+func (receiver *identifyCode) getRandStr(n int) (randStr string) {
 	chars := "ABCDEFGHIJKMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789"
 	charsLen := len(chars)
 	if n > 10 {
@@ -45,18 +45,18 @@ func (i *identifyCode) getRandStr(n int) (randStr string) {
 	return randStr
 }
 
-func (ic *identifyCode) imgText(width, height int, text string) (b []byte) {
+func (receiver *identifyCode) imgText(width, height int, text string) (b []byte) {
 	textLen := len(text)
 	dc := gg.NewContext(width, height)
-	bgR, bgG, bgB, bgA := ic.getRandColorRange(240, 255)
+	bgR, bgG, bgB, bgA := receiver.getRandColorRange(240, 255)
 	dc.SetRGBA255(bgR, bgG, bgB, bgA)
 	dc.Clear()
 
 	// 干扰线
 	for i := 0; i < 30; i++ {
-		x1, y1 := ic.getRandPos(width, height)
-		x2, y2 := ic.getRandPos(width, height)
-		r, g, b, a := ic.getRandColor(255)
+		x1, y1 := receiver.getRandPos(width, height)
+		x2, y2 := receiver.getRandPos(width, height)
+		r, g, b, a := receiver.getRandColor(255)
 		w := float64(rand.Intn(6) + 1)
 		dc.SetRGBA255(r, g, b, a)
 		dc.SetLineWidth(w)
@@ -65,15 +65,15 @@ func (ic *identifyCode) imgText(width, height int, text string) (b []byte) {
 	}
 
 	fontSize := float64(height/2) + 5
-	face := ic.loadFontFace(fontSize)
+	face := receiver.loadFontFace(fontSize)
 	dc.SetFontFace(face)
 
 	for i := 0; i < len(text); i++ {
-		r, g, b, _ := ic.getRandColor(100)
+		r, g, b, _ := receiver.getRandColor(100)
 		dc.SetRGBA255(r, g, b, 255)
 		fontPosX := float64(width/textLen*i) + fontSize*0.6
 
-		ic.writeText(dc, text[i:i+1], float64(fontPosX), float64(height/2))
+		receiver.writeText(dc, text[i:i+1], float64(fontPosX), float64(height/2))
 	}
 
 	buffer := bytes.NewBuffer(nil)
@@ -83,7 +83,7 @@ func (ic *identifyCode) imgText(width, height int, text string) (b []byte) {
 }
 
 // 渲染文字
-func (ic *identifyCode) writeText(dc *gg.Context, text string, x, y float64) {
+func (receiver *identifyCode) writeText(dc *gg.Context, text string, x, y float64) {
 	xfload := 5 - rand.Float64()*10 + x
 	yfload := 5 - rand.Float64()*10 + y
 
@@ -95,14 +95,14 @@ func (ic *identifyCode) writeText(dc *gg.Context, text string, x, y float64) {
 }
 
 // 随机坐标
-func (ic *identifyCode) getRandPos(width, height int) (x float64, y float64) {
+func (receiver *identifyCode) getRandPos(width, height int) (x float64, y float64) {
 	x = rand.Float64() * float64(width)
 	y = rand.Float64() * float64(height)
 	return x, y
 }
 
 // 随机颜色
-func (ic *identifyCode) getRandColor(maxColor int) (r, g, b, a int) {
+func (receiver *identifyCode) getRandColor(maxColor int) (r, g, b, a int) {
 	r = int(uint8(rand.Intn(maxColor)))
 	g = int(uint8(rand.Intn(maxColor)))
 	b = int(uint8(rand.Intn(maxColor)))
@@ -111,7 +111,7 @@ func (ic *identifyCode) getRandColor(maxColor int) (r, g, b, a int) {
 }
 
 // 随机颜色范围
-func (ic *identifyCode) getRandColorRange(miniColor, maxColor int) (r, g, b, a int) {
+func (receiver *identifyCode) getRandColorRange(miniColor, maxColor int) (r, g, b, a int) {
 	if miniColor > maxColor {
 		miniColor = 0
 		maxColor = 255
@@ -124,7 +124,7 @@ func (ic *identifyCode) getRandColorRange(miniColor, maxColor int) (r, g, b, a i
 }
 
 // 加载字体
-func (ic *identifyCode) loadFontFace(points float64) font.Face {
+func (receiver *identifyCode) loadFontFace(points float64) font.Face {
 	data, _ := ioutil.ReadFile("my.ttf")
 	f, err := truetype.Parse(data)
 
